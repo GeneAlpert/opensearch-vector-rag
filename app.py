@@ -155,20 +155,20 @@ def new_chat_memory_id():
     # Persist memory_id
     st.session_state.memory_id = response['memory_id']
     st.session_state.messages = []
-    st.session_state.query_image = ''
+    st.session_state.query_image = image1
 
 if 'memory_id' not in st.session_state:
     new_chat_memory_id()   
 
-with st.form("memory_id_display"):
+with st.expander("memory_id_display", expanded=True):
     st.write("Memory ID: " + st.session_state.memory_id)
     if 'query_image' not in st.session_state:
         st.session_state.query_image = ''
         st.write("Querying without image.")
     else:
-        st.write("Query image: " + st.session_state.query_image)
-        # st.image(st.session_state.query_image, width=30)
-    st.form_submit_button("New chat",on_click=new_chat_memory_id)
+        st.write("Query image selected: <u>" + st.session_state.query_image + "</u>. To change it, use the <u>Use Image...</u> option above to query with a different image.", unsafe_allow_html=True)
+        st.image(st.session_state.query_image, width=30)
+    # st.form_submit_button("New chat",on_click=new_chat_memory_id)
 
 # Display chat messages from history on app rerun
 for message in st.session_state.messages:
@@ -182,7 +182,7 @@ if prompt := st.chat_input("Type your question here..."):
         st.markdown(prompt)
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.status("Fetching search results and shopping assistant response..."):
+    with st.status("Fetching search results and shopping assistant response for **"+prompt+ "** and Image: " + st.session_state.query_image):
         response = response_generator(prompt)
     # Extract the generated 'shopping assistant' recommendations
     recommendations = response['ext']['retrieval_augmented_generation']['answer']
@@ -204,4 +204,13 @@ if prompt := st.chat_input("Type your question here..."):
             st.markdown('')
         st.markdown(":red[**Shopping Assistant:**]")
         st.markdown(recommendations)
-
+        col1, col2 = st.columns([10, 1])
+        with col1:
+            st.info(
+                """
+                If you wish to start a new chat, click the **New Chat** button. Otherwise, continue sending or asking follow-up questions below.
+                """
+            )       
+        with col2:
+            st.button("New Chat", on_click=new_chat_memory_id)
+            
