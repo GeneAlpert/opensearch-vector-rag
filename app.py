@@ -73,7 +73,7 @@ with col2:
         st.session_state.query_image = image2
         
 with col3:
-    st.write("Image 2")
+    st.write("Image 3")
     st.image(image3, width=150)
     if st.button("Use image 3"):
         st.session_state.query_image = image3
