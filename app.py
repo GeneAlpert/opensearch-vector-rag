@@ -119,7 +119,7 @@ def response_generator(prompt):
             "size": 5,
             "ext": {
                 "generative_qa_parameters": {
-                    "llm_model": "bedrock/claude",
+                    "llm_model": "bedrock-converse/anthropic.claude-3-sonnet-20240229-v1:0",
                     "llm_question": query_text,
                     "memory_id": st.session_state.memory_id,
                     "context_size": 5,
